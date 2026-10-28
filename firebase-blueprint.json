@@ -1,0 +1,50 @@
+{
+  "entities": {
+    "UserSyncData": {
+      "title": "UserSyncData",
+      "description": "User fitness data synchronized with the cloud",
+      "type": "object",
+      "properties": {
+        "trackerLogHistory": {
+          "type": "array",
+          "description": "History of completed, logged workouts"
+        },
+        "savedPlans": {
+          "type": "array",
+          "description": "Saved customized workout plans/templates"
+        },
+        "exerciseHistory": {
+          "type": "array",
+          "description": "List of progressive overload stats per exercise"
+        },
+        "cardioHistory": {
+          "type": "array",
+          "description": "History of tracked and logged cardio sessions"
+        },
+        "programs": {
+          "type": "array",
+          "description": "User-generated and custom fitness program routes"
+        },
+        "activeProgramId": {
+          "type": "string",
+          "description": "The currently active fitness program ID"
+        },
+        "availableEquipment": {
+          "type": "array",
+          "description": "The equipment checked off as available by the user"
+        },
+        "lastSyncedAt": {
+          "type": "integer",
+          "description": "The millisecond timestamp when this document was last saved"
+        }
+      },
+      "required": []
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "UserSyncData",
+      "description": "The user fitness document identified by normalized email/username"
+    }
+  }
+}

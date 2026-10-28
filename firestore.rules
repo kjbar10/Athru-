@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net (default deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Validate that the document ID (normalized username/email) is present and within safe length limits
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // Validate the schema structure of the synchronized user fitness data
+    function isValidUserSyncData(data) {
+      return (data.get('lastSyncedAt', 0) is int || data.get('lastSyncedAt', 0) is float)
+        && (data.get('activeProgramId', null) == null || data.get('activeProgramId', '') is string)
+        && (data.get('availableEquipment', []) is list)
+        && (data.get('trackerLogHistory', []) is list)
+        && (data.get('savedPlans', []) is list)
+        && (data.get('exerciseHistory', []) is list)
+        && (data.get('cardioHistory', []) is list)
+        && (data.get('programs', []) is list);
+    }
+
+    match /users/{userId} {
+      allow read: if isValidId(userId);
+      allow write: if isValidId(userId) && isValidUserSyncData(request.resource.data);
+    }
+  }
+}
